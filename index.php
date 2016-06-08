@@ -22,13 +22,14 @@
 
 		$(document).ready(function() {
 			// $('select:not(:has(option))').attr('disabled', true);;
-
 			$('#os').change(function() {
 				update_models();
 			});
 			$('#model').change(function() {
+				model = $("#model option:selected").text();
 				update_langs();
 			});
+
 		})
 
 		function update_models() {
@@ -39,16 +40,19 @@
 		function show_models(res) {
 			$('#model').html(res);
 			model = $('#model option:first').text();
+			console.log(model);
 			update_langs();
 		}
 
 		function update_langs() {
 			$.get('get_subfolder.php?parent=' + os + '&dir=' + model, show_langs);
+
 		}
 
 		function show_langs(res) {
 			$('#lang').html(res);
 			lang = $('#lang option:first').text();
+			console.log(lang);
 			// update_path();
 		}
 
@@ -64,9 +68,9 @@
 
 		function saveUrl() {
 			os = $("#os option:selected").val();
-			model = $("#model option:selected").val();
-			lang = $("#lang option:selected").val();
-			if($("#lang option:selected").val() == 'undefined' || $("#lang option:selected").val() == null)
+			model = $("#model option:selected").text();
+			lang = $("#lang option:selected").text();
+			if($("#lang option:selected").text() == 'undefined' || $("#lang option:selected").text() == null)
 				alert("언어를 선택해주세요");
 			else
 				path = './' + os + '/' + model + '/' + lang;
@@ -111,10 +115,11 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-6">
-					<a class="btn btn-primary btn-block" onclick="openUrl()">Open Manual</a>
+					<a class="btn btn-primary btn-block" id="btn_open" onclick="openUrl()">Open Manual</a>
+					<!-- <a class="btn btn-primary btn-block" id="btn_open" href="javascript:openUrl();">Open Manual</a> -->
 				</div>
 				<div class="col-xs-6">
-					<a class="btn btn-success btn-block" onclick="saveUrl()">Save Manual</a>
+					<a class="btn btn-success btn-block" id="btn_save" onclick="saveUrl()">Save Manual</a>
 				</div>
 			</div>
 			<div class="row">
@@ -126,7 +131,7 @@
 				<div class="col-xs-6">
 				</div>
 				<div class="col-xs-6">
-					<a class="btn btn-warning btn-block" href="#" role="button">Save Checklist</a>
+					<a class="btn btn-warning btn-block" id="btn_save_check" href="#" role="button">Save Checklist</a>
 				</div>
 			</div>
 		</form>
