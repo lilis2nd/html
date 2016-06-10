@@ -133,6 +133,7 @@ fclose($current);
 	<style>
 	/* 추가 CSS */
 	.btn {font-weight: bold;}
+	.upsp {margin-top: 1em;}
 	</style>
 </head>
 
@@ -197,12 +198,7 @@ fclose($current);
 					<a class="btn btn-success btn-block" id="btn_save" onclick="saveUrl()">Save Manual</a>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-xs-12">
-					<p></p>
-				</div>
-			</div>
-			<div class="row">
+			<div class="row upsp">
 				<div class="col-xs-6">
 					<select class="form-control" name="checklist" id="checklist"></select>
 				</div>
@@ -211,6 +207,16 @@ fclose($current);
 				</div>
 			</div>
 		</form>
+	</div>
+	<div class="row upsp">
+		<div class="page-header">
+			<h4>References</h4>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-4">
+			<a class="btn btn-default btn-block" href="info_numbers.php" target="_blank">Ara #</a>
+		</div>
 	</div>
 </div>
 </body>
