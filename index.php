@@ -1,3 +1,18 @@
+<?php
+// 쓸데없는 ZIP 파일 삭제하기
+$temp = glob("*.zip", GLOB_BRACE);
+$now = date("Y/m/d H:i:s");
+$logfile = './delete.log';
+$current = fopen($logfile, 'a') or die("로그 파일이 없습니다.");
+
+if (count($temp) > 0) {
+	foreach ($temp as $key => $filename) {
+		fwrite($current, $now . ' - ' . $filename . "\r\n");
+		@unlink($filename);
+	}
+}
+fclose($current);
+?>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -15,20 +30,29 @@
 	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 	<script src=".bs/js/bootstrap.min.js"></script>
 	<script type="text/javascript">
+		// 변수 선언
 		var os;
 		var model;
 		var lang;
 		var path;
 
 		$(document).ready(function() {
-			// $('select:not(:has(option))').attr('disabled', true);;
+			// 변수 empty 확인
+			console.log(os);
+			console.log(model);
+			console.log(lang);
+			console.log(path);
+
+			// OS 선택 시 model 변경
 			$('#os').change(function() {
 				update_models();
 			});
+			// model 변경 시 lang 변경
 			$('#model').change(function() {
 				model = $("#model option:selected").text();
 				update_langs();
 			});
+			// lang 변경 시 path 업데이트
 			$('#lang').change(function() {
 				lang = $("#lang option:selected").text();
 				console.log("OS: " + os + " / Model: " + model + " / Language: " + lang);
@@ -74,7 +98,8 @@
 			model = $("#model option:selected").val();
 			lang = $("#lang option:selected").val();
 			if($("#lang option:selected").val() == 'undefined' || $("#lang option:selected").val() == null)
-				alert("언어를 선택해주세요");
+				// alert("언어를 선택해주세요");
+				$('#md_error').modal('show');
 			else
 				window.open("/" + os + "/" + model + "/" + lang + '/start_here.html', '_blank');
 		}
@@ -84,7 +109,8 @@
 			model = $("#model option:selected").val();
 			lang = $("#lang option:selected").val();
 			if($("#lang option:selected").val() == 'undefined' || $("#lang option:selected").val() == null)
-				alert("언어를 선택해주세요")();
+				// alert("언어를 선택해주세요")();
+				$('#md_error').modal('show');
 			else
 				path = './' + os + '/' + model + '/' + lang;
 				location.href = "zipper.php?path=" + path + "&name=" + lang;
@@ -94,18 +120,42 @@
 			os = $("#os option:selected").val();
 			model = $("#model option:selected").val();
 			path = "./" + os + "/" + model + "/" + $("#checklist option:selected").text();
-			// alert(path);
-			console.log(path);
-			window.location.href = path;
+			if($('#checklist option').length === 0) {
+				// alert("언어를 선택해주세요")();
+				$('#md_error').modal('show');
+			}
+			else {
+				console.log(path);
+				window.location.href = path;
+			}
 		}
 	</script>
 	<style>
+	/* 추가 CSS */
 	.btn {font-weight: bold;}
 	</style>
 </head>
 
 <body>
 <div class="container">
+	<!-- MODAL -->
+	<div class="modal fade" tabindex="-1" role="dialog" id="md_error">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4>오류</h4>
+				</div>
+				<div class="class=modal-body">
+					<p class="text-center"><strong>언어를 선택해 주세요.</strong></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-warning" data-dismiss="modal">닫기</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 페이지 시작 -->
 	<div class="page-header">
 		<h3>:: <a href="./" target="_self">매뉴얼 네비게이터</a> ::</h3>
 	</div>
@@ -125,13 +175,13 @@
 			<div class="form-group">
 				<h4>모델 선택</h4>
 				<select class="form-control" id="model" name="model">
-					<!-- <option selected="selected" disabled="disabled">OS를 선택해야 나타납니다.</option> -->
+					<!-- <option>OS를 선택해야 나타납니다.</option> -->
 				</select>
 			</div>
 			<div class="form-group">
 				<h4>언어 선택</h4>
 				<select class="form-control" id="lang" name="lang">
-					<!-- <option selected="selected" disabled="disabled">모델을 선택해야 나타납니다.</option> -->
+					<!-- <option>모델을 선택해야 나타납니다.</option> -->
 				</select>
 			</div>
 			<div class="row">
