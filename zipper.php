@@ -56,6 +56,7 @@ $lang = $_GET['name'];
 $date = date("YmdHis").substr((string)microtime(), 1, 6);
 $filename = $lang . '.zip';
 $filename_temp = $lang . '_' . $date . '.zip';
+
 // Zip!
 HZip::zipDir($dir, $filename_temp); 
 

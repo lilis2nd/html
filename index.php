@@ -29,7 +29,11 @@
 				model = $("#model option:selected").text();
 				update_langs();
 			});
-
+			$('#lang').change(function() {
+				lang = $("#lang option:selected").text();
+				console.log("OS: " + os + " / Model: " + model + " / Language: " + lang);
+				update_path();
+			})
 		})
 
 		function update_models() {
@@ -40,20 +44,29 @@
 		function show_models(res) {
 			$('#model').html(res);
 			model = $('#model option:first').text();
-			console.log(model);
+			// console.log(model);
 			update_langs();
 		}
 
 		function update_langs() {
 			$.get('get_subfolder.php?parent=' + os + '&dir=' + model, show_langs);
-
 		}
 
 		function show_langs(res) {
 			$('#lang').html(res);
 			lang = $('#lang option:first').text();
-			console.log(lang);
-			// update_path();
+			// console.log(lang);
+			console.log("OS: " + os + " / Model: " + model + " / Language: " + lang);
+			update_path();
+		}
+
+		function update_path() {
+			// alert(os + '_' + model);
+			$.get('get_checklist.php?os=' + os + '&model=' + model, show_checklist);
+		}
+
+		function show_checklist(res) {
+			$('#checklist').html(res);
 		}
 
 		function openUrl() {
@@ -68,13 +81,22 @@
 
 		function saveUrl() {
 			os = $("#os option:selected").val();
-			model = $("#model option:selected").text();
-			lang = $("#lang option:selected").text();
-			if($("#lang option:selected").text() == 'undefined' || $("#lang option:selected").text() == null)
-				alert("언어를 선택해주세요");
+			model = $("#model option:selected").val();
+			lang = $("#lang option:selected").val();
+			if($("#lang option:selected").val() == 'undefined' || $("#lang option:selected").val() == null)
+				alert("언어를 선택해주세요")();
 			else
 				path = './' + os + '/' + model + '/' + lang;
 				location.href = "zipper.php?path=" + path + "&name=" + lang;
+		}
+
+		function saveChecklist() {
+			os = $("#os option:selected").val();
+			model = $("#model option:selected").val();
+			path = "./" + os + "/" + model + "/" + $("#checklist option:selected").text();
+			// alert(path);
+			console.log(path);
+			window.location.href = path;
 		}
 	</script>
 	<style>
@@ -85,7 +107,7 @@
 <body>
 <div class="container">
 	<div class="page-header">
-		<h3>:: 매뉴얼 네비게이터 ::</h3>
+		<h3>:: <a href="./" target="_self">매뉴얼 네비게이터</a> ::</h3>
 	</div>
 	<div>
 		<form>
@@ -102,11 +124,15 @@
 			</div>
 			<div class="form-group">
 				<h4>모델 선택</h4>
-				<select class="form-control" id="model" name="model"></select>
+				<select class="form-control" id="model" name="model">
+					<!-- <option selected="selected" disabled="disabled">OS를 선택해야 나타납니다.</option> -->
+				</select>
 			</div>
 			<div class="form-group">
 				<h4>언어 선택</h4>
-				<select class="form-control" id="lang" name="lang"></select>
+				<select class="form-control" id="lang" name="lang">
+					<!-- <option selected="selected" disabled="disabled">모델을 선택해야 나타납니다.</option> -->
+				</select>
 			</div>
 			<div class="row">
 				<div class="col-xs-12">
@@ -116,7 +142,6 @@
 			<div class="row">
 				<div class="col-xs-6">
 					<a class="btn btn-primary btn-block" id="btn_open" onclick="openUrl()">Open Manual</a>
-					<!-- <a class="btn btn-primary btn-block" id="btn_open" href="javascript:openUrl();">Open Manual</a> -->
 				</div>
 				<div class="col-xs-6">
 					<a class="btn btn-success btn-block" id="btn_save" onclick="saveUrl()">Save Manual</a>
@@ -129,9 +154,10 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-6">
+					<select class="form-control" name="checklist" id="checklist"></select>
 				</div>
 				<div class="col-xs-6">
-					<a class="btn btn-warning btn-block" id="btn_save_check" href="#" role="button">Save Checklist</a>
+					<a class="btn btn-warning btn-block" id="btn_save_check" onclick="saveChecklist()">Save Checklist</a>
 				</div>
 			</div>
 		</form>
